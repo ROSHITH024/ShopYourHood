@@ -1,0 +1,15 @@
+{% extends 'layout.html' %}
+
+
+
+{% block content %}
+<h2>Add Product to Shop</h2>
+<h3>{{ product.name }}</h3>
+<p>Category: {{ product.category }}</p>
+<p>Description: {{ product.description }}</p>
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Add Product</button>
+</form>
+{% endblock %}

@@ -1,0 +1,65 @@
+{% extends 'layout.html' %}
+
+{% block title %}
+    About Us - Shop Your Hood
+{% endblock %}
+
+{% block content %}
+    <div class="container my-5">
+        <!-- Introduction Section -->
+        <section class="text-center mb-5">
+            <h1 class="display-4 font-weight-bold">About Us</h1>
+            <p class="lead text-muted">
+                Welcome to <strong>Shop Your Hood</strong>, your trusted platform for finding products in nearby offline stores. 
+                We’re committed to supporting local businesses and bringing you the best local shopping experience.
+            </p>
+        </section>
+
+        <!-- Mission Card -->
+        <section class="mb-5">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h2 class="card-title text-primary">Our Mission</h2>
+                    <p class="card-text">
+                        Our mission is to connect customers with local shops, making it easy and enjoyable to shop locally 
+                        and find the products you love right in your neighborhood.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- What We Offer Card -->
+        <section class="mb-5">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h2 class="card-title text-primary">What We Offer</h2>
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item">Easy product search in nearby stores</li>
+                        <li class="list-group-item">Booking options to reserve products</li>
+                        <li class="list-group-item">Support for local businesses</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Contact Us Card -->
+        <section class="mb-5">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h2 class="card-title text-primary">Contact Us</h2>
+                    <p class="card-text">
+                        If you have any questions, feel free to <a href="#" class="text-primary">contact us</a>. 
+                        We’d love to hear from you and assist you with any inquiries.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Back to Home Button -->
+        <div class="text-center mt-4">
+            <a href="{% url 'index' %}" class="btn btn-primary btn-lg">
+                Go Back to Home
+            </a>
+        </div>
+    </div>
+{% endblock %}

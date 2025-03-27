@@ -1,0 +1,39 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+<h2>Pending Product Requests</h2>
+
+<div class="row">
+    <div class="product-grid row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 row-cols-xl-5">
+    {% for product in pending_products %}
+    
+    <div class="col-md-3 mb-3">
+        <div class="product-item">
+            <!-- Wishlist icon -->
+            
+            <!-- Product image and link -->
+            <figure>
+                <a href="" title="{{ shop_product.product.name }}">
+                    <img src=" {{ product.image.url }} " class="tab-image" alt="{{ shop_product.product.name }}">
+                </a>
+            </figure>
+
+            <!-- Product details -->
+            <h3>{{ shop_product.product.name }}</h3>
+            <span class="qty">{{ product.name }} Unit(s)</span>
+    
+            <p class="card-text text-custom-danger"><strong>Status:</strong> Pending Verification</p>
+
+
+            <!-- Edit and Delete buttons (optional, if needed) -->
+           
+        </div>
+    </div>
+    {% empty %}
+    <div class="alert alert-warning" role="alert">
+        No pending requests found.
+    </div>  
+    {% endfor %}
+</div>
+{% endblock %}
+    

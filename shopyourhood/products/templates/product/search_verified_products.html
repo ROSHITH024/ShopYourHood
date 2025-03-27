@@ -1,0 +1,45 @@
+{% extends 'layout.html' %}
+
+{% block title %}
+    Search Verified Products
+{% endblock %}
+
+{% block content %}
+    <div class="container my-5">
+        <h2 class="text-center mb-4">Search for Verified Products</h2>
+
+        <!-- Search Form -->
+        <form method="get" action="{% url 'search_verified_products' %}" class="input-group mb-4">
+            <input type="text" name="query" class="form-control" placeholder="Search for a product..." value="{{ query }}" required>
+            <button type="submit" class="btn btn-primary">Search</button>
+        </form>
+
+        <!-- Messages -->
+        {% if messages %}
+            <div class="mb-3">
+                {% for message in messages %}
+                    <p class="alert alert-info">{{ message }}</p>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        <!-- Search Results -->
+        {% if products %}
+            <h3 class="mb-3">Search Results</h3>
+            <ul class="list-group">
+                {% for product in products %}
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <span>{{ product.name }} </span>
+                        <a href="{% url 'add_product_to_shop' product.id %}" class="btn btn-outline-success btn-sm">Add to Shop</a>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            {% if query %}
+                <div class="alert alert-warning mt-4" role="alert">
+                    No products found. You can register a new product <a href="{% url 'register_product' %}" class="alert-link">here</a>.
+                </div>
+            {% endif %}
+        {% endif %}
+    </div>
+{% endblock %}

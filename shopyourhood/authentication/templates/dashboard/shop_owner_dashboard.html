@@ -1,0 +1,55 @@
+{% extends "layout.html" %}
+
+{% block title %}Shop Owner Dashboard{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="text-center mb-5">
+        <h2 class="display-4 font-weight-bold">Welcome, {{ shop_profile.name }}!</h2>
+        <p class="lead text-muted">This is your shop dashboard where you can manage products, view orders, and more.</p>
+    </div>
+
+    <!-- Dashboard Overview Cards -->
+    <div class="row text-center">
+        <div class="col-md-4 mb-4">
+            <div class="card shadow-sm border-0">
+                <div class="card-body">
+                    <h5 class="card-title font-weight-bold">Manage Products</h5>
+                    <p class="card-text text-muted">Add, edit, or delete products in your shop.</p>
+                    <button class="btn btn-primary btn-sm mt-3" disabled>Coming Soon</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4 mb-4">
+            <div class="card shadow-sm border-0">
+                <div class="card-body">
+                    <h5 class="card-title font-weight-bold">View Orders</h5>
+                    <p class="card-text text-muted">Track customer orders and booking requests.</p>
+                    <button class="btn btn-primary btn-sm mt-3" disabled>Coming Soon</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4 mb-4">
+            <div class="card shadow-sm border-0">
+                <div class="card-body">
+                    <h5 class="card-title font-weight-bold">Settings</h5>
+                    <p class="card-text text-muted">Update shop details and account information.</p>
+                    <button class="btn btn-primary btn-sm mt-3" disabled>Coming Soon</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Announcements Section -->
+    <div class="card shadow-sm border-0 mt-5">
+        <div class="card-body">
+            <h5 class="card-title font-weight-bold text-center">Announcements</h5>
+            <p class="card-text text-muted text-center">
+                Stay updated with the latest announcements and updates related to your shop and the platform.
+            </p>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,17 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Shop Pending Request
+{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <!-- Alert Card -->
+    <div class="card text-center border-warning shadow-sm">
+        <div class="card-body">
+            <h2 class="card-title text-warning">Hey {{ name }},</h2>
+            <p class="card-text">Admin is verifying your request. Please try again later.</p>
+        </div>
+    </div>
+</div>
+{% endblock %}

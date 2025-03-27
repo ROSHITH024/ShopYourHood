@@ -1,0 +1,28 @@
+{% extends "layout.html" %}
+
+
+{% block title %}
+    Admin dashboard
+{% endblock %}
+
+
+
+{% block content %}
+
+<h2>Review Shop Verification</h2>
+
+<p>Shop Name: {{ shop.name }}</p>
+<p>Owner: {{ shop.owner_name }}</p>
+<p>Location: {{ shop.location }}</p>
+<p>Address: {{ shop.address }}</p>
+<p>Building Number: {{ shop.shop_number }}</p> 
+<p><img class="shop_proof" src="{{ shop.shop_proof.url }}" alt="" srcset=""></p>
+
+<form method="post">
+    {% csrf_token %}
+    <button type="submit" name="action" value="verify">Verify</button>
+    <button type="submit" name="action" value="reject">Reject</button>
+</form>
+
+
+{% endblock %}

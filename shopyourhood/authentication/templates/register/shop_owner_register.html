@@ -1,0 +1,97 @@
+{% extends "layout.html" %}
+{% load widget_tweaks %}
+
+{% block title %}
+    Shop Owner Registration
+{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow-lg border-0">
+                <div class="card-body">
+                    <h2 class="card-title text-center mb-4 font-weight-bold">Shop Owner Registration</h2>
+                    
+                    <!-- Display form errors here if needed -->
+                    {% if form.non_field_errors %}
+                        <div class="alert alert-danger">
+                            {% for error in form.non_field_errors %}
+                                <p>{{ error }}</p>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+
+                    <form method="post" enctype="multipart/form-data" class="px-3 py-2">
+                        {% csrf_token %}
+
+                        <!-- Loop through form fields and add Bootstrap styling -->
+                        {% for field in form %}
+                            <div class="form-group">
+                                <label for="{{ field.id_for_label }}" class="font-weight-semibold">{{ field.label }}</label>
+                                <div class="input-group">
+                                    {% if field.label == "Username" %}
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text h-100"><i class="fas fa-user"></i></span>
+                                        </div>
+                                    {% elif field.label == "Name" %}
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text h-100"><i class="fas fa-store"></i></span>
+                                        </div>
+                                    {% elif field.label == "Location" %}
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text h-100"><i class="fas fa-map-marker-alt"></i></span>
+                                        </div>
+                                    {% comment %} {% elif field.label == "Shop License Proof" %}
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text"><i class="fas fa-file-upload"></i></span>
+                                        </div> {% endcomment %}
+                                    {% elif field.label == "Phone" %}
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text h-100"><i class="fas fa-phone"></i></span>
+                                        </div>
+                                        {% elif field.label == "Address" %}
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text h-100"><i class="fas fa-map-marker-alt"></i></span>
+                                        </div>
+                                        {% elif field.label == "Email" %}
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text h-100"><i class="fas fa-envelope"></i></span>
+                                        </div>
+                                        {% elif field.label == "Password" %}
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text h-100"><i class="fas fa-lock"></i></span>
+                                        </div>
+                                    {% elif field.label == "Password confirmation" %}
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text h-100"><i class="fas fa-lock"></i></span>
+                                        </div>
+                                        {% elif field.label == "Owner name" %}
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text h-100"><i class="fas fa-store"></i></span>
+                                        </div>
+                                        {% elif field.label == "Shop number" %}
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text h-100"><i class="fas fa-phone"></i></span>
+                                        </div>
+                                    {% endif %}
+                                    {{ field|add_class:"form-control" }}
+                                </div>
+                                {% if field.errors %}
+                                    <small class="form-text text-danger">
+                                        {% for error in field.errors %}
+                                            {{ error }}
+                                        {% endfor %}
+                                    </small>
+                                {% endif %}
+                            </div>
+                        {% endfor %}
+                        
+                        <button type="submit" class="btn btn-primary btn-block mt-3 font-weight-bold">Register</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

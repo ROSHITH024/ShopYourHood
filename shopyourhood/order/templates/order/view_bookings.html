@@ -1,0 +1,61 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+<h2 class="my-4">Your Bookings</h2>
+
+<div class="product-grid row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 row-cols-xl-5">
+    {% for booking in bookings %}
+    <div class="col mb-4">
+        <div class="product-item">
+            <figure class="text-center" style="height: 220px; background-color: white;">
+                <a href="#">
+                    <img src="{{ booking.product.image.url }}" class="tab-image img-fluid" alt="{{ booking.product.name }}">
+                </a>
+            </figure>
+            <h3 class="mt-2 text-center">{{ booking.product.name }}</h3>
+            <span class="qty d-block text-center"><strong>Status:</strong> {{ booking.status }}</span>
+            {% if booking.expires_at %}
+            <span class="rating d-block text-center">
+                <strong>Expires in:</strong> <span id="countdown-{{ booking.id }}"></span>
+            </span>
+            {% else %}
+            <span class="rating d-block text-center">No expiration time set</span>
+            {% endif %}
+        </div>
+    </div>
+
+    {% if booking.expires_at %}
+    <script>
+        (function() {
+            // Calculate remaining time in seconds until the booking expiration
+            const expirationTime = new Date("{{ booking.expires_at|date:'Y-m-d H:i:s' }}").getTime();
+            const countdownElement = document.getElementById('countdown-{{ booking.id }}');
+
+            function updateCountdown() {
+                const now = new Date().getTime();
+                const timeRemaining = Math.floor((expirationTime - now) / 1000);
+
+                if (timeRemaining <= 0) {
+                    countdownElement.innerText = "Expired";
+                } else {
+                    const hours = Math.floor(timeRemaining / 3600);
+                    const minutes = Math.floor((timeRemaining % 3600) / 60);
+                    const seconds = Math.floor(timeRemaining % 60);
+                    countdownElement.innerText = `${hours}h ${minutes}m ${seconds}s`;
+                }
+            }
+
+            // Start countdown interval
+            updateCountdown();
+            setInterval(updateCountdown, 1000);
+        })();
+    </script>
+    {% endif %}
+    {% empty %}
+    <div class="alert alert-warning" role="alert">
+        No bookings found.
+    </div>
+    {% endfor %}
+</div>
+
+{% endblock %}
