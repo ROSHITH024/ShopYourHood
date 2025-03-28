@@ -1,12 +1,16 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.utils import timezone
-from .models import Booking, CartItem, OrderRequest
+
+from authentication import models
+from .models import Booking, BookingRequest, CartItem, OrderRequest
 from products.models import Product, ShopProduct
 from django.urls import reverse
 from authentication.models import ShopProfile
 from django.contrib.auth import get_user_model
 from django.views.decorators.http import require_POST
+from django.utils.timezone import now
+from django.http import JsonResponse
 
 User = get_user_model()
 
@@ -203,6 +207,16 @@ def handle_order_request(request, request_id, action):
     elif action == 'reject':
         booking_id = order_request.booking.id  # Store booking ID for deletion
         order_request.reject()
-        order_request.delete()  # Delete the order request from the OrderRequest table
-        Booking.objects.filter(id=booking_id).delete()
+        booking = order_request.booking
+        booking.status = 'reject'
+        booking.save()
+        # order_request.delete()  # Delete the order request from the OrderRequest table
+        # Booking.objects.filter(id=booking_id).delete()
     return redirect('shop_owner_requests')
+
+
+def remove_expired_bookings(request):
+    expired_bookings = Booking.objects.filter(expires_at__lt=now())  # Select expired bookings
+    deleted_count, _ = expired_bookings.delete()  # Delete and get the count
+
+    return JsonResponse({"message": f"Removed {deleted_count} expired bookings."})

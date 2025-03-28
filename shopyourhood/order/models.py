@@ -3,6 +3,7 @@ from django.db import models
 from django.conf import settings
 from products.models import Product
 from authentication.models import ShopProfile
+from django.utils.timezone import now
 
 class Booking(models.Model):
     customer = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
@@ -40,3 +41,16 @@ class OrderRequest(models.Model):
     def reject(self):
         self.status = 'rejected'
         self.save()
+
+
+class BookingRequest(models.Model):
+    booking = models.ForeignKey("Booking", on_delete=models.CASCADE)
+    status = models.CharField(max_length=20, choices=[("pending", "Pending"), ("approved", "Approved"), ("rejected", "Rejected")])
+    created_at = models.DateTimeField(auto_now_add=True)  # Track booking time
+    duration = models.DurationField(default="1 day")  # Example duration
+
+    @property
+    def remaining_time(self):
+        expiry_time = self.created_at + self.duration
+        remaining = expiry_time - now()
+        return max(remaining, None)  # Ensure we don't return negative values
