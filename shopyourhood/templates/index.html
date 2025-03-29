@@ -118,218 +118,185 @@
 
     <header>
       <div class="container-fluid">
-        <div class="row py-1 border-bottom">
-          
-          <div class="col-sm-4 col-lg-3 text-center text-sm-start">
-            <div class="main-logo">
-              <a href="{% url "index" %}">
-                <img src="{% static 'images/logo.svg' %}" alt="logo" class="img-fluid">
-              </a>
-            </div>
-          </div>
-          
-          <div class="col-sm-6 offset-sm-2 offset-md-0 col-lg-5 d-none d-lg-block py-4">
-            <div class="search-bar row bg-light py-1 my-1 rounded-4">
-              <div class="col-md-4 d-none d-md-block">
-                <select class="form-select border-0 bg-transparent">
-                  <option>All Categories</option>
-                  <option>Groceries</option>
-                  <option>Drinks</option>
-                  <option>Chocolates</option>
-                </select>
-              </div>
-              <div class="col-11 col-md-7">
-                <form id="search-form" class="text-center" action="index.html" method="post">
-                  <input type="text" class="form-control border-0 bg-transparent" placeholder="Search for more than 20,000 products" />
-                </form>
-              </div>
-              <div class="col-1 text-center" style="padding-left: 3px;">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="M21.71 20.29L18 16.61A9 9 0 1 0 16.61 18l3.68 3.68a1 1 0 0 0 1.42 0a1 1 0 0 0 0-1.39ZM11 18a7 7 0 1 1 7-7a7 7 0 0 1-7 7Z"/></svg>
-              </div>
-            </div>
-          </div>
-          
-          <div class="col-sm-8 col-lg-4 d-flex justify-content-end gap-5 align-items-center  mt-sm-0 justify-content-center justify-content-sm-end">
+        <div class="row py-1 border-bottom align-items-center">
             
-            <ul class="d-flex justify-content-end list-unstyled m-0">
-              {% comment %} <li>
-                <a href="#" class="rounded-circle bg-light p-2 mx-1">
-                  <svg width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#user"></use></svg>
-                </a>
-              </li>
-              <li>
-                <a href="#" class="rounded-circle bg-light p-2 mx-1">
-                  <svg width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#cart"></use></svg>
-                </a>
-              </li> {% endcomment %}
-              <li>
-                {% comment %} <a href="#" class="rounded-circle bg-light p-2 mx-1" data-bs-toggle="offcanvas" data-bs-target="#offcanvasCart" aria-controls="offcanvasCart">
-                  <svg width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#login"></use></svg>
-                </a>
-              </li>  {% endcomment %}
-            </ul>
-
-            {% comment %} <div class="cart text-end d-none d-lg-block dropdown">
-              <button class="border-0 bg-transparent d-flex flex-column gap-2 lh-1" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasCart" aria-controls="offcanvasCart">
-                <span class="fs-6 text-muted dropdown-toggle">Register</span>
-              </button>
-            </div> {% endcomment %}
-            <div class="dropdown">
-              <button class="border-0 bg-transparent d-flex flex-column gap-2 lh-1 dropdown-toggle no-arrow" 
-                      type="button" 
-                      data-bs-toggle="dropdown" 
-                      aria-expanded="false">
-                  <i class="bi bi-person-plus fs-5 text-muted"></i>
-                  <span class="fs-6 text-muted">Register</span>
-              </button>
-              <!-- Dropdown Menu with Options -->
-              <ul class="dropdown-menu">
-                  <li><a class="dropdown-item" href="{% url 'customer_register' %}">Customer Register</a></li>
-                  <li><a class="dropdown-item" href="{% url 'shop_owner_register' %}">Shop Owner Register</a></li>
-              </ul>
-          </div>
-            <div class="cart text-end d-none d-lg-block dropdown">
-                  <a href="{% url "login" %}" class=" btn fs-6 text-muted">Login</a>
-                
-              </div>
-          </div>
-
-        </div>
-      </div>
-      {% comment %} <div class="container-fluid">
-        <div class="row py-3">
-          <div class="d-flex justify-content-center justify-content-sm-between align-items-center w-100">
-            <nav class="main-menu d-flex navbar navbar-expand-lg">
-              <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasNavbar" aria-labelledby="offcanvasNavbarLabel">
-                <div class="offcanvas-header">
-                  <h5 class="offcanvas-title" id="offcanvasNavbarLabel">Menu</h5>
-                  <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+            <!-- Logo Column -->
+            <div class="col-lg-3 col-md-3 col-sm-12 text-center text-md-start">
+                <div class="main-logo">
+                    <a href="{% url 'index' %}">
+                        <img src="{% static 'images/logo.svg' %}" alt="logo" class="img-fluid">
+                    </a>
                 </div>
-      
-                <div class="offcanvas-body justify-content-end">
-                  <ul class="navbar-nav menu-list list-unstyled d-flex gap-md-3 mb-0">
-                    <li class="nav-item active">
-                      <a href="#women" class="nav-link">Women</a>
-                    </li>
-                    <li class="nav-item">
-                      <a href="#men" class="nav-link">Men</a>
-                    </li>
-                    <li class="nav-item">
-                      <a href="#kids" class="nav-link">Kids</a>
-                    </li>
-                    <li class="nav-item">
-                      <a href="#accessories" class="nav-link">Accessories</a>
-                    </li>
-                    <li class="nav-item dropdown">
-                      <a class="nav-link dropdown-toggle" role="button" id="pages" data-bs-toggle="dropdown" aria-expanded="false">Pages</a>
-                      <ul class="dropdown-menu" aria-labelledby="pages">
-                        <li><a href="index.html" class="dropdown-item">About Us</a></li>
-                        <li><a href="index.html" class="dropdown-item">Shop</a></li>
-                        <!-- Add more dropdown items as needed -->
-                      </ul>
-                    </li>
-                    <li class="nav-item">
-                      <a href="#brand" class="nav-link">Brand</a>
-                    </li>
-                    <li class="nav-item">
-                      <a href="#sale" class="nav-link">Sale</a>
-                    </li>
-                    <li class="nav-item">
-                      <a href="#blog" class="nav-link">Blog</a>
-                    </li>
-                  </ul>
-                  
+            </div>
+    
+            <!-- Search Bar (Visible only on lg & md) -->
+            <div class="col-lg-5 col-md-5 d-none d-md-block">
+                {% if request.path != "/auth/register/customer/" and request.path != "/auth/register/shop/" and request.path != "/auth/login/" %}
+                <div class="search-bar row bg-light py-1 my-1 rounded-4">
+                    <div class="col-md-4 d-none d-md-block">
+                        <select class="form-select border-0 p-0 bg-transparent">
+                            <option>All Categories</option>
+                            <option>Groceries</option>
+                            <option>Drinks</option>
+                            <option>Chocolates</option>
+                        </select>
+                    </div>
+                    <div class="col-11 col-md-7">
+                        <form id="search-form" class="text-center" action="index.html" method="post">
+                            <input type="text" class="form-control border-0 p-0 bg-transparent" placeholder="Search for more than 20,000 products" />
+                        </form>
+                    </div>
+                    <div class="col-1 text-center" style="padding-left: 3px;">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                            <path fill="currentColor" d="M21.71 20.29L18 16.61A9 9 0 1 0 16.61 18l3.68 3.68a1 1 0 0 0 1.42 0a1 1 0 0 0 0-1.39ZM11 18a7 7 0 1 1 7-7a7 7 0 0 1-7 7Z"/>
+                        </svg>
+                    </div>
                 </div>
-      
-              </div>
-            </nav>
-          </div>
+                {% endif %}
+            </div>
+    
+            <!-- Navigation/Login Column -->
+            <div class="col-lg-4 col-md-4 col-sm-12 d-flex justify-content-end gap-5 align-items-center justify-content-center justify-content-sm-end mt-2">
+                {% for item in navigation %}
+                <div class="cart text-end dropdown">
+                    {% if item.name == 'Logout' %}
+                    <form action="{% url item.url %}" method="post" class="d-inline">
+                        {% csrf_token %}
+                        <button type="submit" class="nav-link btn btn-link text-muted">
+                            <i class="{{ item.icon }}"></i> {{ item.name }}
+                        </button>
+                    </form>
+                    {% elif item.name == 'Register'%}
+                    {% if request.path != "/auth/login/" %}
+                    <div class="dropdown">
+                        <button class="border-0 bg-transparent d-flex flex-column gap-2 lh-1 dropdown-toggle no-arrow text-muted btn btn-warning" 
+                                type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <span class="text-muted"><i class="{{ item.icon }}"></i> {{ item.name }}</span>
+                        </button>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="{% url 'customer_register' %}">Customer Register</a></li>
+                            <li><a class="dropdown-item" href="{% url 'shop_owner_register' %}">Shop Owner Register</a></li>
+                        </ul>
+                    </div>
+                    {% endif %}
+                    {% else %}
+                    {% if request.path != "/auth/register/customer/" and request.path != "/auth/register/shop/" %}
+                    <a href="{% url item.url %}" class="btn fs-6 text-muted">
+                        <i class="{{ item.icon }}"></i> {{ item.name }}</a> 
+                    {% endif %}
+                    {% endif %}
+                </div>
+                {% endfor %}
+            </div>
+          
         </div>
-      </div> {% endcomment %}
+    
+        <!-- Search Bar for Small Screens (Visible only on sm) -->
+        <div class="row d-md-none">
+            <div class="col-12">
+                {% if request.path != "/auth/register/customer/" and request.path != "/auth/register/shop/" and request.path != "/auth/login/" %}
+                <div class="search-bar bg-light py-1 my-1 rounded-4">
+                    <div class="row">
+                        <div class="col-12">
+                            <select class="form-select border-0 p-0 bg-transparent">
+                                <option>All Categories</option>
+                                <option>Groceries</option>
+                                <option>Drinks</option>
+                                <option>Chocolates</option>
+                            </select>
+                        </div>
+                        <div class="col-12 mt-2">
+                            <form id="search-form" class="text-center" action="index.html" method="post">
+                                <input type="text" class="form-control border-0 p-0 bg-transparent" placeholder="Search for more than 20,000 products" />
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+        
+    </div>
       
     </header>
     
     <section class="py-3 section1" style="background-image: url('{% static 'images/background-pattern.jpg' %}');background-repeat: no-repeat;background-size: cover;">
-    {% comment %} <section class="py-3 section1" style="background-image: url('{% static 'images/banner-image-1.jpg' %}'); background-size: cover; background-position: center;height: 300px;"> {% endcomment %}
-       
-    
       <div class="container-fluid">
         <div class="row">
-          <div class="col-md-12">
-
-            <div class="banner-blocks">
-            
-              <div class="large bg-info block-1">
-
-                <div class="swiper main-swiper">
-                  <div class="swiper-wrapper">
-                    
-                    <div class="swiper-slide">
-                      <div class="row banner-content p-5">
-                        <div class="content-wrapper col-md-7">
-                          <div class="categories my-3">100% natural</div>
-                          <h3 class="display-4">Fresh Smoothie & Summer Juice</h3>
-                          <p>Refresh your palate and nourish your body with our vibrant smoothies and summer juices.</p>
-                          <a href="#" class="btn btn-outline-dark btn-lg text-uppercase fs-6 rounded-1 px-4 py-3 mt-3">Shop Now</a>
-                        </div>
-                        <div class="img-wrapper col-md-5">
-                          <img src="{% static 'images/product-thumb-1.png' %}" class="img-fluid">
-                        </div>
-                      </div>
-                    </div>
+          <div class="col-12">
+      <div class="large bg-info block-1">
+        <div class="swiper main-swiper">
+            <div class="swiper-wrapper">
                 
-                    
-                    <div class="swiper-slide">
-                      <div class="row banner-content p-5">
-                        <div class="content-wrapper col-md-7">
-                          <div class="categories mb-3 pb-3">100% natural</div>
-                          <h3 class="banner-title">Heinz Tomato Ketchup</h3>
-                          <p>Let's create some compelling copy for your Heinz Tomato Ketchup banner!</p>
-                          <a href="#" class="btn btn-outline-dark btn-lg text-uppercase fs-6 rounded-1">Shop Collection</a>
+                <!-- Slide 1 -->
+                <div class="swiper-slide">
+                    <div class="row banner-content p-3 p-md-5 align-items-center">
+                        <div class="col-12 col-md-7 text-center text-md-start">
+                            <div class="categories my-3">100% natural</div>
+                            <h3 class="display-6 display-md-4">Fresh Smoothie & Summer Juice</h3>
+                            <p>Refresh your palate and nourish your body with our vibrant smoothies and summer juices.</p>
+                            <a href="#" class="btn btn-outline-dark btn-lg text-uppercase fs-6 rounded-1 px-3 py-2 mt-3">Shop Now</a>
                         </div>
-                        <div class="img-wrapper col-md-5">
-                          <img src="{% static 'images/product-thumb-2.png' %}" class="img-fluid">
+                        <div class="col-12 col-md-5 text-center mt-3">
+                            <img src="{% static 'images/product-thumb-1.png' %}" class="img-fluid img-responsive" alt="Smoothie">
                         </div>
-                      </div>
                     </div>
-                  </div>
-                  
-                  <div class="swiper-pagination"></div>
-
                 </div>
-              </div>
-              
-              <div class="bg-success-subtle block-2" style="background:url('{% static 'images/ad-image-1.png' %}') no-repeat;background-position: right bottom">
-                <div class="row banner-content p-5">
-
-                  <div class="content-wrapper col-md-7">
-                    <div class="categories sale mb-3 pb-3">20% off</div>
-                    <h3 class="banner-title">Fruits & Vegetables</h3>
-                    <a href="#" class="d-flex align-items-center nav-link">Shop Collection <svg width="24" height="24"><use xlink:href="#arrow-right"></use></svg></a>
-                  </div>
-
+    
+                <!-- Slide 2 -->
+                <div class="swiper-slide">
+                    <div class="row banner-content p-3 p-md-5 align-items-center">
+                        <div class="col-12 col-md-7 text-center text-md-start">
+                            <div class="categories mb-3 pb-3">100% natural</div>
+                            <h3 class="display-6 display-md-4">Heinz Tomato Ketchup</h3>
+                            <p>Let's create some compelling copy for your Heinz Tomato Ketchup banner!</p>
+                            <a href="#" class="btn btn-outline-dark btn-lg text-uppercase fs-6 rounded-1 px-3 py-2">Shop Collection</a>
+                        </div>
+                        <div class="col-12 col-md-5 text-center mt-3">
+                            <img src="{% static 'images/product-thumb-2.png' %}" class="img-fluid img-responsive" alt="Ketchup">
+                        </div>
+                    </div>
                 </div>
-              </div>
-
-              <div class="bg-danger block-3" style="background:url('{% static 'images/ad-image-2.png' %}') no-repeat;background-position: right bottom">
-                <div class="row banner-content p-5">
-
-                  <div class="content-wrapper col-md-7">
-                    <div class="categories sale mb-3 pb-3">15% off</div>
-                    <h3 class="item-title">Baked Products</h3>
-                    <a href="#" class="d-flex align-items-center nav-link">Shop Collection <svg width="24" height="24"><use xlink:href="#arrow-right"></use></svg></a>
-                  </div>
-
-                </div>
-              </div>
-
             </div>
-            <!-- / Banner Blocks -->
-              
-          </div>
+            <div class="swiper-pagination"></div>
         </div>
-      </div>
+    </div>
+  </div>
+    
+    <!-- Background Block 2 -->
+    <div class="col-12 col-md-6 mt-3">
+    <div class="bg-success-subtle block-2" 
+        style="background: url('{% static 'images/ad-image-1.png' %}') no-repeat center bottom; background-size: cover;">
+        <div class="row banner-content p-5">
+            <div class="col-12 col-md-7">
+                <div class="categories sale mb-3 pb-3">20% off</div>
+                <h3 class="banner-title">Fruits & Vegetables</h3>
+                <a href="#" class="d-flex align-items-center nav-link">Shop Collection 
+                    <svg width="24" height="24"><use xlink:href="#arrow-right"></use></svg>
+                </a>
+            </div>
+        </div>
+    </div>
+  </div>
+    <!-- Background Block 3 -->
+    <div class="col-12 col-md-6 mt-3">
+    <div class="bg-danger block-3" 
+        style="background: url('{% static 'images/ad-image-2.png' %}') no-repeat center bottom; background-size: cover;">
+        <div class="row banner-content p-5">
+            <div class="col-12 col-md-7">
+                <div class="categories sale mb-3 pb-3">15% off</div>
+                <h3 class="item-title">Baked Products</h3>
+                <a href="#" class="d-flex align-items-center nav-link">Shop Collection 
+                    <svg width="24" height="24"><use xlink:href="#arrow-right"></use></svg>
+                </a>
+            </div>
+        </div>
+    </div>
+  </div>
+  </div>
+</div>
     </section>
+   
 
     <section class="py-5 overflow-hidden">
       <div class="container-fluid">

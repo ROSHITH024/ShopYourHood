@@ -1,6 +1,7 @@
 {% extends 'layout.html' %}
 
 {% block content %}
+<div class="container">
 <h2>Pending Product Requests</h2>
 
 <div class="row">
@@ -8,15 +9,17 @@
     {% for product in pending_products %}
     
     <div class="col-md-3 mb-3">
-        <div class="product-item">
+        <div class="product-item p-3 border rounded shadow-sm w-100 h-100 d-flex flex-column">
             <!-- Wishlist icon -->
             
             <!-- Product image and link -->
-            <figure>
-                <a href="" title="{{ shop_product.product.name }}">
-                    <img src=" {{ product.image.url }} " class="tab-image" alt="{{ shop_product.product.name }}">
-                </a>
-            </figure>
+            <div class="h-50 mb-3">
+                <figure class="text-center" style="background-color: white;">
+                    <a href="" title="{{ shop_product.product.name }}">
+                        <img src=" {{ product.image.url }} " class="tab-image" alt="{{ shop_product.product.name }}" width="100" height="120">
+                    </a>
+                </figure>
+            </div>
 
             <!-- Product details -->
             <h3>{{ shop_product.product.name }}</h3>
@@ -34,6 +37,7 @@
         No pending requests found.
     </div>  
     {% endfor %}
+</div>
 </div>
 {% endblock %}
     

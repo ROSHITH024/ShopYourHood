@@ -1,0 +1,81 @@
+/* Responsive Adjustments */
+@media (max-width: 991px) { /* Tablets */
+    .search-bar {
+        width: 100% !important; /* Full width search bar */
+        justify-content: center;
+        margin-top: 10px;
+    }
+
+    .search-bar input {
+        min-width: 250px; /* Prevent input from shrinking too much */
+    }
+
+    .cart {
+        text-align: center !important;
+        margin-top: 10px;
+    }
+}
+
+@media (max-width: 768px) { /* Mobile */
+    .main-logo {
+        text-align: center !important; /* Center logo */
+    }
+
+    .search-bar {
+        flex-direction: column;
+        align-items: center;
+        margin-top: 10px;
+    }
+
+    .search-bar select,
+    .search-bar input {
+        width: 100% !important;
+        text-align: center;
+    }
+
+    .cart {
+        display: flex !important;
+        justify-content: center;
+        gap: 10px;
+        margin-top: 10px;
+    }
+
+    .navbar-nav {
+        flex-direction: column !important;
+        align-items: center !important;
+    }
+}
+
+
+
+/* Ensure images scale properly */
+.img-responsive {
+    max-width: 100%;
+    height: auto;
+}
+
+/* Fix Swiper slides not displaying correctly */
+.swiper-slide {
+    display: flex !important;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    height: auto !important;
+}
+
+/* Ensure text and images are spaced properly */
+@media (max-width: 768px) {
+    .banner-content {
+        padding: 2rem 1rem !important;
+    }
+    .banner-content h3 {
+        font-size: 1.8rem !important;
+    }
+    .banner-content p {
+        font-size: 1rem !important;
+    }
+    .btn {
+        font-size: 0.9rem !important;
+        padding: 0.8rem 1.2rem !important;
+    }
+}

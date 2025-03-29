@@ -1,21 +1,24 @@
 {% extends 'layout.html' %}
 
 {% block content %}
-<h2>My Products</h2>
 
+<div class="container">
+    <h2>My Products</h2>
 <div class="row">
     {% for shop_product in verified_products %}
-    <div class="col-md-3 mb-3">
-        <div class="product-item">
+    <div class="col-md-3 mb-3 d-flex align-items-stretch">
+        <div class="product-item p-3 border rounded shadow-sm w-100 h-100 d-flex flex-column">
             <!-- Wishlist icon -->
     
             
             <!-- Product image and link -->
-            <figure>
-                <a href="{% url 'choose_shop' shop_product.product.id 'book' %}" title="{{ shop_product.product.name }}">
-                    <img src="{{ shop_product.product.image.url }}" class="tab-image" alt="{{ shop_product.product.name }}">
-                </a>
-            </figure>
+            <div class="h-50">
+                <figure class="text-center" style="background-color: white;">
+                    <a href="{% url 'choose_shop' shop_product.product.id 'book' %}" title="{{ shop_product.product.name }}">
+                        <img src="{{ shop_product.product.image.url }}" class="tab-image" alt="{{ shop_product.product.name }}" width="100" height="120">
+                    </a>
+                </figure>
+            </div>
 
             <!-- Product details -->
             <h3>{{ shop_product.product.name }}</h3>
@@ -56,5 +59,6 @@
         </div>
     </div>
     {% endfor %}
+</div>
 </div>
 {% endblock %}

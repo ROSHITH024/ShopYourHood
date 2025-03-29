@@ -14,11 +14,12 @@
         <div class="col-md-3 mb-3 d-flex align-items-stretch">
             <div class="product-item p-3 border rounded shadow-sm w-100 h-100 d-flex flex-column">
                 <!-- Product image -->
+                <div class="h-50">
                 <figure class="text-center" style="background-color: white;">
                     <img src="{{ request.booking.product.image.url }}" class="tab-image" 
                          alt="{{ request.booking.product.name }}" width="100" height="120">
                 </figure>
-
+            </div>
                 <!-- Product details -->
                 <h3 class="h6 text-center">{{ request.booking.product.name }}</h3>
                 <span class="qty d-block text-center">Customer: <strong>{{ request.booking.customer.username }}</strong></span>

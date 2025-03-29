@@ -1,21 +1,21 @@
 {% extends 'layout.html' %}
 
 {% block content %}
-<div class="container my-4">
-    <h2 class="mb-4 text-center">Register New Product</h2> <!-- Centered header -->
+<div class="container my-5"> <!-- Added more margin for better spacing -->
+    <h2 class="mb-4 text-center text-primary">Register New Product</h2> <!-- Added color for better visibility -->
 
-    <div class="card shadow-sm"> <!-- Added shadow for a subtle 3D effect -->
-        <div class="card-body">
+    <div class="card shadow-lg border-0 rounded-3"> <!-- Softer edges and deeper shadow for a modern look -->
+        <div class="card-body p-4"> <!-- Increased padding for better spacing -->
             <form method="post" enctype="multipart/form-data">
                 {% csrf_token %}
 
-                <div class="mb-3"> <!-- Margins for better spacing -->
-                    {{ form.as_p }}
+                <div class="mb-3"> 
+                    {{ form.as_p }} <!-- Assuming Django form rendering, otherwise add custom form elements -->
                 </div>
 
-                <div class="d-flex justify-content-between mt-4"> <!-- Increased top margin -->
-                    <button type="submit" class="btn btn-primary">Submit for Verification</button>
-                    <a href="{% url 'view_verified_products' %}" class="btn btn-secondary">Cancel</a> <!-- Optional cancel button -->
+                <div class="d-flex justify-content-end gap-3 mt-4"> <!-- Better button spacing -->
+                    <a href="{% url 'view_verified_products' %}" class="btn btn-outline-secondary px-4">Cancel</a> <!-- Modern outline button -->
+                    <button type="submit" class="btn btn-success px-4">Submit for Verification</button> <!-- Changed color to success for a positive action -->
                 </div>
             </form>
         </div>

@@ -138,21 +138,22 @@
 
 
             <header>
-                <div class="container-fluid">
+                <div class="container">
                   <div class="row py-1 border-bottom">
                     
                     <div class="col-sm-4 col-lg-3 text-center text-sm-start">
                       <div class="main-logo">
                         <a href="{% url "index" %}">
-                          <img src="{% static 'images/logo.svg' %}" alt="logo" class="img-fluid">
+                          <img src="{% static 'images/logo.svg' %}" alt="logo" class="img">
                         </a>
                       </div>
                     </div>
                     
                     <div class="col-sm-6 offset-sm-2 offset-md-0 col-lg-5 d-none d-lg-block py-4">
+                      {% if request.path != "/auth/register/customer/" and request.path != "/auth/register/shop/" and request.path != "/auth/login/" %}
                       <div class="search-bar row bg-light py-1 my-1 rounded-4">
                         <div class="col-md-4 d-none d-md-block">
-                          <select class="form-select border-0 bg-transparent">
+                          <select class="form-select border-0 p-0 bg-transparent">
                             <option>All Categories</option>
                             <option>Groceries</option>
                             <option>Drinks</option>
@@ -161,13 +162,14 @@
                         </div>
                         <div class="col-11 col-md-7">
                           <form id="search-form" class="text-center" action="index.html" method="post">
-                            <input type="text" class="form-control border-0 bg-transparent" placeholder="Search for more than 20,000 products" />
+                            <input type="text" class="form-control border-0 p-0 bg-transparent" placeholder="Search for more than 20,000 products" />
                           </form>
                         </div>
                         <div class="col-1 text-center" style="padding-left: 3px;">
                           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="M21.71 20.29L18 16.61A9 9 0 1 0 16.61 18l3.68 3.68a1 1 0 0 0 1.42 0a1 1 0 0 0 0-1.39ZM11 18a7 7 0 1 1 7-7a7 7 0 0 1-7 7Z"/></svg>
                         </div>
                       </div>
+                      {% endif %}
                     </div>
                     
                     <div class="col-sm-8 col-lg-4 d-flex justify-content-end gap-5 align-items-center  mt-sm-0 justify-content-center justify-content-sm-end">
@@ -465,4 +467,4 @@
     <script src="{% static 'js/script.js' %}"></script>
     <script src="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.js"></script>
 </body>
-</html>
+</html> 

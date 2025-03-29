@@ -18,8 +18,14 @@ class ProductForm(forms.ModelForm):
     class Meta:
         model = Product
         fields = ['name', 'category', 'description', 'image']
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field_name, field in self.fields.items():
+            field.widget.attrs.update({'class': 'form-control', 'placeholder': f'Enter {field.label}'})
 
 class ShopProductForm(forms.ModelForm):
     class Meta:
         model = ShopProduct
         fields = ['quantity', 'price']
+
+
