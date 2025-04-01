@@ -1,15 +1,15 @@
 {% extends 'layout.html' %}
 
 {% block content %}
-<section class="py-5">
+<section class="py-1">
   <div class="container-fluid">
     <div class="row">
       <div class="col-md-12">
         <div class="bootstrap-tabs product-tabs">
-          <div class="tabs-header d-flex justify-content-between border-bottom my-5">
-            <h3>Products</h3>
+          <div class="tabs-header border-bottom my-5">
+            <div><h3>Products</h3></div>
             <nav>
-              <div class="nav nav-tabs" id="nav-tab" role="tablist">
+              <div class="nav nav-tabs w-100 fs-5 fs-md-4 fs-lg-3" id="nav-tab" role="tablist">
                 <a href="#" class="nav-link text-uppercase fs-6 active" id="nav-all-tab" data-bs-toggle="tab" data-bs-target="#nav-all">All</a>
                 {% for category, products in categories.items %}
                 <a href="#nav-{{ category }}" class="nav-link text-uppercase fs-6" id="nav-{{ category }}-tab" data-bs-toggle="tab" data-bs-target="#nav-{{ category }}">{{ category }}</a>

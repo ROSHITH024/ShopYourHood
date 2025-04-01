@@ -9,7 +9,7 @@ def user_navigation(request):
         if user_type == 1:  # Customer
             navigation = [ 
                 
-                {'name': 'Cart', 'url': 'view_cart', 'icon': 'fas fa-shopping-cart'},
+                # {'name': 'Cart', 'url': 'view_cart', 'icon': 'fas fa-shopping-cart'},
                 {'name': 'Logout', 'url': 'logout', 'icon': 'fas fa-sign-out-alt'},
             ]
             sidebar = [
