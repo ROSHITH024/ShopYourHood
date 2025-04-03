@@ -69,7 +69,7 @@
         No pending requests.
     </div>
     {% endfor %}
-    <span id="remove-expired-url" data-url="{% url 'remove_expired_bookings' %}" hidden></span>
+    <span id="remove-expired-url" data-url="{% url 'delete_expired_bookings' %}" hidden></span>
 </div>
 
 <!-- Countdown Timer Script -->
@@ -103,20 +103,22 @@
             }, 1000);
         });
 
-        // ✅ Get the URL from the hidden <span> element
-        const removeExpiredUrl = document.getElementById("remove-expired-url").getAttribute("data-url");
-
-        // ✅ Ensure removeExpiredUrl exists before calling fetch
-        if (removeExpiredUrl) {
-            setInterval(() => {
-                fetch(removeExpiredUrl)
-                    .then(response => response.json())
-                    .then(data => console.log(data.message))
-                    .catch(error => console.error("Error:", error));
-            }, 600000);  // Run every 10 minutes
-        } else {
-            console.error("Error: remove_expired_bookings URL not found");
-        }
+        document.addEventListener('DOMContentLoaded', function () {
+              // ✅ Get the URL from the hidden <span> element
+              const removeExpiredUrl = document.getElementById('remove-expired-url').getAttribute('data-url')
+            
+              // ✅ Ensure removeExpiredUrl exists before calling fetch
+              if (removeExpiredUrl) {
+                setInterval(() => {
+                  fetch(removeExpiredUrl)
+                    .then((response) => response.json())
+                    .then((data) => console.log(data.message))
+                    .catch((error) => console.error('Error:', error))
+                }, 600000) // Run every 10 minutes (600,000 ms)
+              } else {
+                console.error('Error: remove_expired_bookings URL not found')
+              }
+            })
     });
 </script>
 

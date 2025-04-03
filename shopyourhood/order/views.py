@@ -10,54 +10,58 @@ from authentication.models import ShopProfile
 from django.contrib.auth import get_user_model
 from django.views.decorators.http import require_POST
 from django.utils.timezone import now
-from django.http import JsonResponse
+from django.http import HttpResponseBadRequest, JsonResponse
+from django.views.decorators.csrf import csrf_exempt
 
 User = get_user_model()
 
 @login_required
-def choose_shop(request, product_id, action):   
-    # Fetch only the verified product
+def choose_shop(request, product_id, action):
     product = get_object_or_404(Product, id=product_id, is_verified=True)
-    # Get all shops offering this product (already verified)
     shop_products = ShopProduct.objects.filter(product=product)
-    
+
     if request.method == 'POST':
         shop_id = request.POST.get('shop_id')
-        quantity = request.POST.get('quantity', 1)  # Get quantity from form, default to 1
+        quantity = request.POST.get('quantity', 1)
 
-        if shop_id:
-            if action == 'cart':
-                # Add the selected product to the cart with specified quantity
-                CartItem.objects.create(
-                    customer=request.user, 
-                    product=product, 
-                    shop_id=shop_id,
-                    quantity=int(quantity)  # Convert to integer
-                )
-                return redirect(reverse('view_cart'))  # Redirect to view the cart after adding
+        if not shop_id:
+            return HttpResponseBadRequest("Shop ID is required")
 
-            elif action == 'book':
-                # Create a booking for the selected product
-                booking = Booking.objects.create(
-                    customer=request.user, 
-                    product=product, 
-                    shop_id=shop_id,
-                    status='pending'
-                )
-                booking.start_timer()  # Start the booking timer
+        shop_product = ShopProduct.objects.filter(shop_id=shop_id, product=product).first()
+        shop = get_object_or_404(ShopProfile, id=shop_id)  # ✅ Fetch ShopProfile object
 
-                # Create the order request for the shop owner
-                shop_owner = ShopProfile.objects.get(id=shop_id).user  # Assuming ShopProfile has a user field
-                OrderRequest.objects.create(booking=booking, shop_owner=shop_owner)
+        if action == 'cart':
+            CartItem.objects.create(
+                customer=request.user, 
+                product=product, 
+                shop=shop,  # ✅ Use shop object
+                quantity=int(quantity)
+            )
+            return redirect(reverse('view_cart'))
 
-                return redirect('view_bookings')  # Redirect to the bookings page after booking
+        elif action == 'book':
+            booking = Booking.objects.create(
+                customer=request.user, 
+                product=product, 
+                shop=shop,  # ✅ Use shop object
+                status='pending',
+                price=shop_product.price if shop_product else None
+            )
+            booking.start_timer()
+
+            try:
+                shop_owner = shop.user  # ✅ Get shop owner
+                OrderRequest.objects.create(booking=booking, shop=shop, shop_owner=shop_owner)
+            except ShopProfile.DoesNotExist:
+                return HttpResponseBadRequest("Invalid shop selection")
+
+            return redirect('view_bookings')
 
     return render(request, 'order/choose_shop.html', {
         'product': product,
         'shop_products': shop_products,
         'action': action
     })
-
 
 # cart
 @login_required
@@ -96,6 +100,17 @@ def remove_from_cart(request, item_id):
     return redirect('view_cart')  # Redirect back to the cart view
 
 
+@login_required
+@require_POST
+def remove_from_booking(request, item_id):
+    if request.method == 'POST':
+        # Get the cart item to be removed
+        book_item = get_object_or_404(Booking, id=item_id, customer=request.user)
+        book_item.delete()  # Remove the item from the booking
+
+    return redirect('view_bookings')  # Redirect back to the booking view
+
+
 
 
 @login_required
@@ -109,14 +124,15 @@ def checkout(request):
                 customer=request.user,
                 product=item.product,
                 shop=item.shop,
-                status='pending'
+                status='pending',
+                price=ShopProduct.price if ShopProduct else None 
             )
             
             # Start the 24-hour timer on each booking
             booking.start_timer()
             
             # Create an order request tied to the booking for shop approval
-            OrderRequest.objects.create(booking=booking, shop_owner=item.shop.user)
+            OrderRequest.objects.create(bookingOrderRequest=booking, shop_owner=item.shop.user)
     
     # Clear cart after checkout
     cart_items.delete()
@@ -220,3 +236,14 @@ def remove_expired_bookings(request):
     deleted_count, _ = expired_bookings.delete()  # Delete and get the count
 
     return JsonResponse({"message": f"Removed {deleted_count} expired bookings."})
+
+
+@csrf_exempt  # Use this only if needed; better to use CSRF token in AJAX
+def delete_expired_bookings(request):
+    if request.method == "GET":  # Only allow GET requests
+        expired_bookings = Booking.objects.filter(status="pending", expires_at__lt=now())
+        deleted_count, _ = expired_bookings.delete()
+
+        return JsonResponse({"message": f"Removed {deleted_count} expired pending bookings."})
+
+    return JsonResponse({"error": "Invalid request method."}, status=400)
