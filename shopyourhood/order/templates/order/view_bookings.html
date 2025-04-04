@@ -7,7 +7,7 @@
     <div class="product-grid row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 row-cols-xl-5">
       {% for booking in bookings %}
         <div class="col mb-4">
-          <div class="product-item">
+          <div class="product-item h-100">
             {% if booking.status != 'approved' %}
               <form action="{% url 'remove_from_booking' booking.id %}" method="POST">
                 {% csrf_token %}
@@ -18,23 +18,26 @@
               <a href="#"><img src="{{ booking.product.image.url }}" class="tab-image img-fluid" alt="{{ booking.product.name }}" /></a>
             </figure>
             <h3 class="mt-2 text-center fs-3 mb-2">{{ booking.product.name }}</h3>
-            <div class="text-center m-0 p-0 mx-auto">
-              <span class="qty d-inline-flex">
-                <strong>Price:</strong>
-                <p class="mb-0 ms-1 fs-4 text-dark fw-semibold">
+            <div class="text-right m-0 p-0 mx-auto">
+              <span class="qty d-flex justify-content-start">
+                <strong class="">Price:</strong>
+                <p class="mb-0 mt-0 ms-1 fs-4 text-dark fw-semibold">
                   <i class="fa-solid fa-indian-rupee-sign ms-2"></i> {{ booking.price }}
                 </p>
               </span>
             </div>
-            <div class="text-center m-0 p-0">
+            <div class="d-flex justify-content-start m-0 p-0">
               <span class="qty d-inline-flex">
+                <strong>Place:</strong>
+                <p class="mb-0 ms-1">{{ booking.shop.name }} {{ booking.shop.location }}</p>
+              </span>
+            </div>
+
+            <div class="m-0 p-0">
+              <span class="qty d-flex justify-content-start">
                 <strong>Status:</strong>
                 <p class="mb-0 ms-1 
                 {% if booking.status == 'approved' %}
-                    
-                    
-                    
-                    
                     
                     
                     
@@ -42,23 +45,11 @@
 
 
 
-
-
-
-
                   {% elif booking.status == 'reject' %}
                     
                     
-                    
-                    
-                    
-                    
-                    
+                      
                   text-primary
-
-
-
-
 
 
 
@@ -66,29 +57,55 @@
               </span>
             </div>
 
+            {% if booking.payment != None  %}
+              <div class="d-flex justify-content-start m-0 p-0">
+                <span class="qty d-inline-flex">
+                  <strong>Payment:</strong>
+                  {#  <p class="mb-0 ms-1">{{ booking.payment }}</p>  #}
+                  {% if booking.payment == 'cop' %}
+                  <p class="mb-0 ms-1 text-primary fw-semibold">Cash on Purchase</p>
+                  {% else %}
+                  <p class="mb-0 ms-1 text-success fw-semibold">Paid</p>
+                  {% endif %}
+                </span>
+              </div>
+            {% endif %}
             {# <span class="qty d-block text-center {% if booking.status == 'APPROVED' %}text-success{% endif %}"><strong>Status:</strong> {{ booking.status }}</span> #}
             {% if booking.expires_at %}
-              <span class="rating d-block text-center"><strong>Expires in:</strong> <span id="countdown-{{ booking.id }}"></span></span>
+              <span class="rating d-flex justify-content-start m-0 p-0"><strong>Expires in:</strong> <span id="countdown-{{ booking.id }}"></span></span>
             {% else %}
-              <span class="rating d-block text-center">No expiration time set</span>
+              <span class="rating d-flex justify-content-start m-0 p-0">No expiration time set</span>
             {% endif %}
 
             <div class="text-center mt-4">
-              <button type="button" class="btn btn-primary " data-bs-toggle="modal" data-bs-target="#exampleModal-{{ booking.id }}" data-price="{{ booking.price }}" data-id="{{ booking.id }}">Payment</button>
-
+              {% if booking.payment == None  %}
+              <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal-{{ booking.id }}" data-price="{{ booking.price }}" data-id="{{ booking.id }}">Payment</button>
+              
+              {% endif %}
               <div class="modal fade" id="exampleModal-{{ booking.id }}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel-{{ booking.id }}" aria-hidden="true">
                 <div class="modal-dialog" role="document">
                   <div class="modal-content">
                     <div class="modal-header">
-                      <h5 class="modal-title" id="exampleModalLabel-{{ booking.id }}">Complete Your Payment</h5>
+                      <h5 class="modal-title" id="exampleModalLabel-{{ booking.id }}">Choose Payment Method</h5>
                     </div>
                     <div class="modal-body text-center">
-                      <h3>Shop Your Hood</h3>
+                      <h4>Shop Your Hood</h4>
                       <p>
                         Amount to Pay: ₹<span id="price-{{ booking.id }}">{{ booking.price }}</span>
                       </p>
-                      <div id="qrcode-{{ booking.id }}"></div>
-                      <button class="btn btn-success mt-3" onclick="payNow('{{ booking.id }}', '{{ booking.price }}')">Proceed to Pay</button>
+
+                      <!-- Payment method options -->
+                      <div class="form-check text-start">
+                        <input class="form-check-input" type="radio" name="paymentMethod-{{ booking.id }}" id="cod-{{ booking.id }}" value="cop" checked />
+                        <label class="form-check-label" for="cod-{{ booking.id }}">Cash on Purchase</label>
+                      </div>
+                      <div class="form-check text-start">
+                        <input class="form-check-input" type="radio" name="paymentMethod-{{ booking.id }}" id="online-{{ booking.id }}" value="online" />
+                        <label class="form-check-label" for="online-{{ booking.id }}">Online Payment</label>
+                      </div>
+
+                      <!-- Proceed button -->
+                      <button class="btn btn-success mt-3" onclick="handlePayment('{{ booking.id }}', '{{ booking.price }}')">Proceed</button>
                     </div>
                   </div>
                 </div>
@@ -164,45 +181,73 @@
               }
             })
             
-            //  razopay operations
-            document.addEventListener('DOMContentLoaded', function () {
-              document.querySelectorAll('.pay-btn').forEach((button) => {
-                button.addEventListener('click', function () {
-                  let bookingId = this.getAttribute('data-id')
-                  let price = this.getAttribute('data-price')
-                  let priceElement = document.getElementById(`price-${bookingId}`)
+            // Razopay operations
+            function handlePayment(bookingId, price) {
+              const selectedMethod = document.querySelector(`input[name="paymentMethod-${bookingId}"]:checked`).value
             
-                  if (priceElement) {
-                    priceElement.innerText = price
-                  } else {
-                    console.error(`Error: Price element not found for booking ${bookingId}`)
-                  }
-            
-                  // Generate QR Code for this booking
-                  let qrData = `upi://pay?pa=your_upi_id@upi&pn=ShopYourHood&mc=1234&tid=TXN${bookingId}&tr=ORDER${bookingId}&tn=Payment for order&am=${price}&cu=INR`
-                  document.getElementById(`qrcode-${bookingId}`).innerHTML = '' // Clear old QR
-                  new QRCode(document.getElementById(`qrcode-${bookingId}`), qrData)
+              if (selectedMethod === 'cop') {
+                // Cash on Purchase - Just send to Django
+                fetch("{% url 'update_payment_method' %}", {
+                  method: 'POST',
+                  headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'X-CSRFToken': '{{ csrf_token }}'
+                  },
+                  body: new URLSearchParams({
+                    booking_id: bookingId,
+                    payment_method: 'cop'
+                  })
                 })
-              })
-            })
-            
-            function payNow(bookingId, price) {
-              let options = {
-                key: 'rzp_test_48Z9LMTDVAN5JU', // Replace with Razorpay Key
-                amount: price * 100, // Convert to paise
-                currency: 'INR',
-                name: 'Shop Your Hood',
-                description: `Payment for Booking ${bookingId}`,
-                handler: function (response) {
-                  alert(`Payment Successful! Payment ID: ${response.razorpay_payment_id}`)
-                },
-                theme: {
-                  color: '#3399cc'
+                  .then((response) => response.json())
+                  .then((data) => {
+                    if (data.status === 'success') {
+                      alert('Cash on Purchase selected successfully.')
+                      location.reload() // Reload or close modal
+                    } else {
+                      alert(data.message)
+                    }
+                  })
+              } else if (selectedMethod === 'online') {
+                const options = {
+                  key: 'rzp_test_48Z9LMTDVAN5JU', // Replace with Razorpay Key
+                  amount: price * 100, // Convert to paise
+                  currency: 'INR',
+                  name: 'Shop Your Hood',
+                  description: `Payment for Booking ${bookingId}`,
+                  handler: function (response) {
+                    // Razorpay successful
+                    fetch("{% url 'update_payment_method' %}", {
+                      method: 'POST',
+                      headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                        'X-CSRFToken': '{{ csrf_token }}'
+                      },
+                      body: new URLSearchParams({
+                        booking_id: bookingId,
+                        payment_method: 'online'
+                      })
+                    })
+                      .then((response) => response.json())
+                      .then((data) => {
+                        if (data.status === 'success') {
+                          alert('Online Payment recorded successfully.')
+                          location.reload() // Reload or redirect
+                        } else {
+                          alert(data.message)
+                        }
+                      })
+                  },
+                  prefill: {
+                    name: 'Customer',
+                    email: 'customer@example.com'
+                  },
+                  theme: {
+                    color: '#0d6efd'
+                  }
                 }
+                const rzp = new Razorpay(options)
+                rzp.open()
               }
-            
-              let rzp = new Razorpay(options)
-              rzp.open()
             }
           </script>
         {% endif %}

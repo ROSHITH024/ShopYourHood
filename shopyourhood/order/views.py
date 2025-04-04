@@ -247,3 +247,20 @@ def delete_expired_bookings(request):
         return JsonResponse({"message": f"Removed {deleted_count} expired pending bookings."})
 
     return JsonResponse({"error": "Invalid request method."}, status=400)
+
+
+@csrf_exempt
+def update_payment_method(request):
+    if request.method == "POST":
+        booking_id = request.POST.get("booking_id")
+        payment_method = request.POST.get("payment_method")  # 'cop' or 'online'
+
+        try:
+            booking = Booking.objects.get(id=booking_id)
+            booking.payment = payment_method
+            booking.save()
+            return JsonResponse({"status": "success", "message": "Payment method updated."})
+        except Booking.DoesNotExist:
+            return JsonResponse({"status": "error", "message": "Booking not found."}, status=404)
+
+    return JsonResponse({"status": "error", "message": "Invalid request method."}, status=400)

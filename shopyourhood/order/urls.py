@@ -26,5 +26,6 @@ urlpatterns = [
     path('checkout/', views.checkout, name='checkout'),
     path("remove-expired-bookings/", views.remove_expired_bookings, name="remove_expired_bookings"),
     path('delete_expired_bookings/', views.delete_expired_bookings, name='delete_expired_bookings'),
+    path("update-payment-method/", views.update_payment_method, name="update_payment_method"),
 
 ]

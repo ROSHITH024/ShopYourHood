@@ -6,6 +6,10 @@ from authentication.models import ShopProfile
 from django.utils.timezone import now
 
 class Booking(models.Model):
+    PAYMENT_CHOICES = [
+        ('cop', 'Cash on Payment'),
+        ('online', 'Online Payment'),
+    ]
     customer = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     shop = models.ForeignKey(ShopProfile, on_delete=models.CASCADE, null=True, blank=True)
@@ -17,6 +21,12 @@ class Booking(models.Model):
     price = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)  # ✅ Add price field
     created_at = models.DateTimeField(auto_now_add=True)
     expires_at = models.DateTimeField(null=True, blank=True)
+    payment = models.CharField(
+        max_length=10,
+        choices=PAYMENT_CHOICES,
+        null=True,
+        blank=True
+    )
 
     def start_timer(self):
         self.expires_at = timezone.now() + timezone.timedelta(hours=24)
