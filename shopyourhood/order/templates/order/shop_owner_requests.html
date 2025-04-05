@@ -22,18 +22,36 @@
             </div>
                 <!-- Product details -->
                 <h3 class="h6 text-center">{{ request.booking.product.name }}</h3>
-                <span class="qty d-block text-center">Customer: <strong>{{ request.booking.customer.username }}</strong></span>
+                <span class="qty d-block justify-content-start">Customer: <strong>{{ request.booking.customer.username }}</strong></span>
+                <span class="qty d-block justify-content-start">Phone: <strong>{{ request.booking.customer.customerprofile.phone }}</strong></span>
 
                 <!-- Status -->
-                <div class="text-center">
+                <div class="justify-content-start">
                     <span class="qty d-inline-flex ">
-                        <strong>Status:</strong>
+                        Status:
+                        <strong>
                         <p class="mb-0 ms-1 
                             {% if request.status == 'approved' %}text-success
                             {% elif request.status == 'rejected' %}text-primary
                             {% endif %}">
                             {{ request.status }}
                         </p>
+                        </strong>
+                    </span>
+                </div>
+
+                <div class="justify-content-start">
+                    <span class="qty d-inline-flex ">
+                        Payment:
+                        <strong>
+                            {% if request.booking.payment == None %}
+                            <p class="mb-0 ms-1">No Payment</p>
+                            {% elif request.booking.payment == 'cop' %}
+                            <p class="mb-0 ms-1 text-primary fw-semibold">Cash on Purchase</p>
+                            {% else %}
+                            <p class="mb-0 ms-1 text-success fw-semibold">Paid</p>
+                            {% endif %}
+                        </strong>
                     </span>
                 </div>
 

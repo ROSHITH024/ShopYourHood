@@ -114,27 +114,62 @@ def remove_from_booking(request, item_id):
 
 
 @login_required
+# def checkout(request):
+#     cart_items = CartItem.objects.filter(customer=request.user)
+    
+#     for item in cart_items:
+#         # Create individual bookings based on the item's quantity
+#         for _ in range(item.quantity):
+#             booking = Booking.objects.create(
+#                 customer=request.user,
+#                 product=item.product,
+#                 shop=item.shop,
+#                 status='pending',
+#                 price=ShopProduct.price if ShopProduct else None 
+#             )
+            
+#             # Start the 24-hour timer on each booking
+#             booking.start_timer()
+            
+#             # Create an order request tied to the booking for shop approval
+#             OrderRequest.objects.create(bookingOrderRequest=booking, shop_owner=item.shop.user)
+    
+#     # Clear cart after checkout
+#     cart_items.delete()
+    
+#     return redirect('view_bookings')
+
 def checkout(request):
     cart_items = CartItem.objects.filter(customer=request.user)
-    
+
     for item in cart_items:
-        # Create individual bookings based on the item's quantity
+        try:
+            # Fetch the shop-product combination
+            shop_product = ShopProduct.objects.get(product=item.product, shop=item.shop)
+        except ShopProduct.DoesNotExist:
+            continue  # Skip if price info doesn't exist
+
         for _ in range(item.quantity):
+            # Create a booking with price from ShopProduct
             booking = Booking.objects.create(
                 customer=request.user,
                 product=item.product,
                 shop=item.shop,
                 status='pending',
-                price=ShopProduct.price if ShopProduct else None 
+                price=shop_product.price
             )
-            
-            # Start the 24-hour timer on each booking
+
+            # Start the 24-hour timer
             booking.start_timer()
-            
-            # Create an order request tied to the booking for shop approval
-            OrderRequest.objects.create(bookingOrderRequest=booking, shop_owner=item.shop.user)
-    
-    # Clear cart after checkout
+
+            # Create associated order request
+            OrderRequest.objects.create(
+                booking=booking,
+                shop=item.shop,
+                shop_owner=item.shop.user
+            )
+
+    # Clear the user's cart after checkout
     cart_items.delete()
     
     return redirect('view_bookings')

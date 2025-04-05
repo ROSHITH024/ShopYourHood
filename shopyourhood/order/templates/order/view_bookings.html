@@ -78,7 +78,7 @@
             {% endif %}
 
             <div class="text-center mt-4">
-              {% if booking.payment == None  %}
+              {% if booking.payment == None and  booking.status == 'approved' %}
               <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal-{{ booking.id }}" data-price="{{ booking.price }}" data-id="{{ booking.id }}">Payment</button>
               
               {% endif %}
