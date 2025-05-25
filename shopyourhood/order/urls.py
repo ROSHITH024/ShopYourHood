@@ -22,10 +22,14 @@ urlpatterns = [
     path('view_cart/', views.view_cart, name='view_cart'),
     path('cart/remove/<int:item_id>/', views.remove_from_cart, name='remove_from_cart'),
     path('booking/remove/<int:item_id>/', views.remove_from_booking, name='remove_from_booking'),
+    path('booking/<int:booking_id>/update-payment/', views.update_payment, name='update_payment'),
     path('cart/estimate/', views.estimate, name='estimate'),
     path('checkout/', views.checkout, name='checkout'),
     path("remove-expired-bookings/", views.remove_expired_bookings, name="remove_expired_bookings"),
     path('delete_expired_bookings/', views.delete_expired_bookings, name='delete_expired_bookings'),
     path("update-payment-method/", views.update_payment_method, name="update_payment_method"),
+    path('check-phone/', views.check_phone_number, name='check_phone'),
+    path('billing/<int:user_id>/', views.billing_page, name='billing_page'),
+    
 
 ]

@@ -1,28 +1,29 @@
-{% extends "layout.html" %}
-
+{% extends 'customlayout.html' %}
 
 {% block title %}
-    Admin dashboard
+  Admin dashboard
 {% endblock %}
 
-
-
 {% block content %}
+  <div class="container">
+    <h2>Review Shop Verification</h2>
+    <div class="row">
+      <div class="col-6">
+        <div>Shop Name: {{ shop.name }}</div>
+        <div>Owner: {{ shop.owner_name }}</div>
+        <div>Location: {{ shop.location }}</div>
+        <div>Address: {{ shop.address }}</div>
+        <div>Building Number: {{ shop.shop_number }}</div>
+        <div>
+          <img class="shop_proof" src="{{ shop.shop_proof.url }}" alt="" srcset="" />
+        </div>
 
-<h2>Review Shop Verification</h2>
-
-<p>Shop Name: {{ shop.name }}</p>
-<p>Owner: {{ shop.owner_name }}</p>
-<p>Location: {{ shop.location }}</p>
-<p>Address: {{ shop.address }}</p>
-<p>Building Number: {{ shop.shop_number }}</p> 
-<p><img class="shop_proof" src="{{ shop.shop_proof.url }}" alt="" srcset=""></p>
-
-<form method="post">
-    {% csrf_token %}
-    <button type="submit" name="action" value="verify">Verify</button>
-    <button type="submit" name="action" value="reject">Reject</button>
-</form>
-
-
+        <form method="post">
+          {% csrf_token %}
+          <button type="submit" name="action" value="verify">Verify</button>
+          <button type="submit" name="action" value="reject">Reject</button>
+        </form>
+      </div>
+    </div>
+  </div>
 {% endblock %}

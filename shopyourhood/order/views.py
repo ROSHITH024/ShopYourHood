@@ -1,3 +1,4 @@
+import json
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.utils import timezone
@@ -10,7 +11,7 @@ from authentication.models import ShopProfile
 from django.contrib.auth import get_user_model
 from django.views.decorators.http import require_POST
 from django.utils.timezone import now
-from django.http import HttpResponseBadRequest, JsonResponse
+from django.http import HttpResponse, HttpResponseBadRequest, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 
 User = get_user_model()
@@ -149,25 +150,24 @@ def checkout(request):
         except ShopProduct.DoesNotExist:
             continue  # Skip if price info doesn't exist
 
-        for _ in range(item.quantity):
-            # Create a booking with price from ShopProduct
-            booking = Booking.objects.create(
-                customer=request.user,
-                product=item.product,
-                shop=item.shop,
-                status='pending',
-                price=shop_product.price
-            )
+        booking = Booking.objects.create(
+            customer=request.user,
+            product=item.product,
+            shop=item.shop,
+            quantity=item.quantity,
+            status='pending',
+            price=shop_product.price
+        )
 
             # Start the 24-hour timer
-            booking.start_timer()
+        booking.start_timer()
 
             # Create associated order request
-            OrderRequest.objects.create(
-                booking=booking,
-                shop=item.shop,
-                shop_owner=item.shop.user
-            )
+        OrderRequest.objects.create(
+            booking=booking,
+            shop=item.shop,
+            shop_owner=item.shop.user
+        )
 
     # Clear the user's cart after checkout
     cart_items.delete()
@@ -299,3 +299,83 @@ def update_payment_method(request):
             return JsonResponse({"status": "error", "message": "Booking not found."}, status=404)
 
     return JsonResponse({"status": "error", "message": "Invalid request method."}, status=400)
+
+@csrf_exempt
+@require_POST
+def update_payment(request, booking_id):
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body)
+            payment = data.get('payment')
+            booking = Booking.objects.get(id=booking_id)
+            booking.payment = payment
+            booking.save()
+
+            return JsonResponse({'message': 'Payment updated successfully'})
+        except Booking.DoesNotExist:
+            return JsonResponse({'error': 'Booking not found'}, status=404)
+        except Exception as e:
+            return JsonResponse({'error': str(e)}, status=500)
+    else:
+        return JsonResponse({'error': 'Invalid request method'}, status=405)
+    
+
+User = get_user_model()
+
+def check_phone_number(request):
+    if request.method == 'POST':
+        phone = request.POST.get('phone')
+        if not phone:
+            return JsonResponse({'error': 'No phone number provided'}, status=400)
+
+        try:
+            # Get bookings where the customer's profile has a matching phone number
+            booking = Booking.objects.select_related('customer__customerprofile').filter(
+                customer__customerprofile__phone=phone
+            ).first()
+
+            if booking:
+                # return JsonResponse({'exists': True, 'booking_id': booking.id})
+                return JsonResponse({"exists": True, "user_id": booking.customer_id})
+            else:
+                return JsonResponse({'exists': False})
+
+        except Exception as e:
+            return JsonResponse({'error': str(e)}, status=500)
+
+    return JsonResponse({'error': 'Invalid request method'}, status=405)
+
+
+@login_required
+
+def billing_page(request, user_id):
+    try:
+        user = User.objects.get(id=user_id)
+    except User.DoesNotExist:
+        return HttpResponse("User not found", status=404)
+
+    # Filter only approved bookings, update condition as needed
+    book_items = Booking.objects.filter(customer=user, status='approved')
+
+    total_price = 0
+    bill_calculations = []
+
+    for item in book_items:
+        if(item.is_billed==False):
+            try:
+                shop_product = ShopProduct.objects.get(product=item.product, shop=item.shop)
+                item_price = shop_product.price * item.quantity
+                total_price += item_price
+                bill_calculations.append({
+                    'product_name': item.product.name,
+                    'quantity': item.quantity,
+                    'unit_price': shop_product.price,
+                    'total_price': item_price
+                })
+            except ShopProduct.DoesNotExist:
+                continue  # skip items without shop info
+
+    return render(request, 'order/bill.html', {
+        'item_calculations': bill_calculations,
+        'total_price': total_price,
+    })

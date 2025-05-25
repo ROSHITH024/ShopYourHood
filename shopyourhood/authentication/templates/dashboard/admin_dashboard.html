@@ -1,4 +1,4 @@
-{% extends "layout.html" %}
+{% extends "customlayout.html" %}
 
 {% block title %}
     Admin Dashboard
@@ -54,18 +54,76 @@
                 </ul>
             </div>
         </div>
+        
+       
         <div class="col-md-6">
-            <div class="card shadow-sm border-dark">
-                <div class="card-header text-dark font-weight-bold">
-                    Performance Overview
+        <div class="card shadow-sm border-info">
+            <div class="container">
+            <form method="get" id="filterForm">
+                <div class="row mb-3">
+                    <div class="col-md-4">
+                        <label for="shopSelect">Select Shop</label>
+                        <select name="shop" id="shopSelect" class="form-control">
+                            <option value="">-- Select Shop --</option>
+                            {% for s in shops %}
+                                <option value="{{ s.id }}" {% if s.id|stringformat:"s" == selected_shop %}selected{% endif %}>
+                                    {{ s.name }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-md-4">
+                        <label for="monthSelect">Select Month</label>
+                        <select name="month" id="monthSelect" class="form-control">
+                            <option value="">-- Select Month --</option>
+                            {% for key, value in months.items %}
+                                <option value="{{ key }}" {% if key == selected_month %}selected{% endif %}>{{ value }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-md-4 d-flex align-items-end">
+                        <button type="submit" class="btn btn-primary">Refresh</button>
+                    </div>
                 </div>
-                <div class="card-body">
-                    <p class="text-muted">Performance metrics for the past month</p>
-                    <!-- Placeholder for future chart or graph -->
-                    <div class="placeholder-chart bg-light" style="height: 200px; border-radius: 10px;"></div>
-                </div>
+            </form>
+        </div>
+            <div class="card-header">Performance Overview</div>
+            <div class="card-body">
+                <p class="text-muted">Bookings trend</p>
+                <canvas id="performanceChart" height="200" style="width: 100%;"></canvas>
             </div>
         </div>
     </div>
+    </div>
 </div>
+
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    const ctx = document.getElementById('performanceChart').getContext('2d');
+    const chart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: {{ labels|safe }},
+            datasets: [{
+                label: 'Daily Bookings',
+                data: {{ data|safe }},
+                fill: true,
+                backgroundColor: 'rgba(54, 162, 235, 0.1)',
+                borderColor: 'rgba(54, 162, 235, 1)',
+                tension: 0.3
+            }]
+        },
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        stepSize: 1
+                    }
+                }
+            }
+        }
+    });
+</script>
 {% endblock %}

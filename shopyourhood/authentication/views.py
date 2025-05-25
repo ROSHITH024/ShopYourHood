@@ -8,6 +8,9 @@ from .models import ShopProfile,CustomUser
 from order.models import Booking
 import os
 from products.models import Product
+import calendar
+import json
+from django.utils.timezone import datetime
 
 # from django.utils.decorators import method_decorator
 # from django.views.decorators.cache import never_cache
@@ -108,12 +111,51 @@ def admin_dashboard(request):
     pending_requests = pending_shop_verifications + pending_product_verifications
 
     name = request.user.username
+
+    # graph section views
+    shop_id = request.GET.get('shop')
+    month = request.GET.get('month')
+    
+    # Get all shops
+    shops = ShopProfile.objects.all()
+
+    # Default values if not selected
+    selected_shop = shop_id if shop_id else ""
+    selected_month = month if month else ""
+
+    # Prepare month name map
+    months = {str(i): calendar.month_name[i] for i in range(1, 13)}
+
+    labels = []
+    data = []
+
+    if shop_id and month:
+        month = int(month)
+        year = datetime.now().year  # or allow dynamic year selection
+        _, days_in_month = calendar.monthrange(year, month)
+
+        for day in range(1, days_in_month + 1):
+            date_obj = datetime(year, month, day).date()
+            count = Booking.objects.filter(
+                shop_id=shop_id,
+                created_at__date=date_obj
+            ).count()
+            labels.append(f"{day:02d} {calendar.month_abbr[month]}")
+            data.append(count)
+
     return render(request, 'dashboard/admin_dashboard.html', {
         'name': name,
         'total_users': total_users,
         'active_orders': active_orders,
         'pending_requests': pending_requests,
+        'labels': json.dumps(labels),
+        'data': json.dumps(data),
+        'shops': shops,
+        'months': months,
+        'selected_shop': selected_shop,
+        'selected_month': selected_month
     })
+
 
 
 # Admin dashboard view (list of pending shop owners)

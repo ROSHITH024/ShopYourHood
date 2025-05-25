@@ -29,7 +29,7 @@ urlpatterns = [
     path('about/',views.about,name='about'),
     path('auth/',include('authentication.urls')),
     path('products/',include('products.urls')),
-    path('order/',include('order.urls')),
+    path('order/', include('order.urls')),
    
 
 ]+ static(settings.MEDIA_URL,document_root=settings.MEDIA_ROOT) #media setup

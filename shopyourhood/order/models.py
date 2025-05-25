@@ -21,6 +21,8 @@ class Booking(models.Model):
     price = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)  # ✅ Add price field
     created_at = models.DateTimeField(auto_now_add=True)
     expires_at = models.DateTimeField(null=True, blank=True)
+    quantity = models.PositiveIntegerField(default=1)
+    is_billed = models.BooleanField(default=False)
     payment = models.CharField(
         max_length=10,
         choices=PAYMENT_CHOICES,

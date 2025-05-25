@@ -5,8 +5,12 @@
 
 <div class="container">
     <h2>Pending Booking Requests</h2>
+    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+    <button type="button" class="btn btn-info " data-bs-toggle="modal" data-id="Bill" data-bs-target="#exampleModal-Bill">Generate Bill</button>
+    </div>
+    {#  <button type="button" class="btn btn-success" data-bs-toggle="modal">Generate Bill</button>  #}
     {% for request in requests %}
-
+    
         {% if forloop.first or forloop.counter0|divisibleby:4 %}
         <div class="row mt-2">  <!-- Start a new row every 4 items -->
         {% endif %}
@@ -41,18 +45,13 @@
                 </div>
 
                 <div class="justify-content-start">
-                    <span class="qty d-inline-flex ">
-                        Payment:
-                        <strong>
-                            {% if request.booking.payment == None %}
-                            <p class="mb-0 ms-1">No Payment</p>
-                            {% elif request.booking.payment == 'cop' %}
-                            <p class="mb-0 ms-1 text-primary fw-semibold">Cash on Purchase</p>
-                            {% else %}
-                            <p class="mb-0 ms-1 text-success fw-semibold">Paid</p>
-                            {% endif %}
-                        </strong>
-                    </span>
+                    <label for="payment" class="qty d-inline-flex">Payment:</label>
+                    <select name="payment" id="payment" class="form-select qty d-inline-flex" data-booking-id="{{ request.booking.id }}"
+                    data-url="{% url 'update_payment' request.booking.id %}">
+                        <option value="" {% if request.booking.payment == None %}selected{% endif %}>No Payment</option>
+                        <option value="cop" {% if request.booking.payment == 'cop' %}selected{% endif %}>Cash on Purchase</option>
+                        <option value="online" {% if request.booking.payment == 'online' %}selected{% endif %}>Paid</option>
+                    </select>
                 </div>
 
                 <!-- Timer -->
@@ -90,26 +89,44 @@
     <span id="remove-expired-url" data-url="{% url 'delete_expired_bookings' %}" hidden></span>
 </div>
 
-<!-- Countdown Timer Script -->
-<script>
-    document.addEventListener("DOMContentLoaded", function() {
-        document.querySelectorAll("[id^='countdown-']").forEach(function(countdownElement) {
-            let timeRemaining = parseInt(countdownElement.getAttribute("data-time-remaining"), 10) || 0; 
+<div class="modal fade" id="exampleModal-Bill" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel-Bill" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel-Bill">Bill Generation</h5><hr>
+            </div>
+            <div class="modal-body text-center">
+                <div class="form-check text-start">
+                    <input type="text" class="form-control" id="phn" placeholder="Enter Phone no">
+                    <small id="phone-error" class="text-dark d-none">Phone number not found</small>
+                </div>
+                <button class="btn btn-primary mt-3" id="confirm-phone">Confirm</button>
+            </div>
+        </div>
+    </div>
+</div>
 
+<script>
+    const url = document.getElementById('payment').getAttribute('data-url');
+    document.addEventListener("DOMContentLoaded", function () {
+        // Countdown timer logic
+        document.querySelectorAll("[id^='countdown-']").forEach(function (countdownElement) {
+            let timeRemaining = parseInt(countdownElement.getAttribute("data-time-remaining"), 10) || 0;
+    
             if (isNaN(timeRemaining) || timeRemaining <= 0) {
                 countdownElement.innerText = "Expired";
                 return;
             }
-
+    
             function formatTime(seconds) {
                 const hours = Math.floor(seconds / 3600);
                 const minutes = Math.floor((seconds % 3600) / 60);
                 const secs = Math.floor(seconds % 60);
                 return `${hours}h ${minutes}m ${secs}s`;
             }
-
+    
             countdownElement.innerText = formatTime(timeRemaining);
-
+    
             const interval = setInterval(() => {
                 if (timeRemaining <= 0) {
                     countdownElement.innerText = "Expired";
@@ -120,24 +137,78 @@
                 }
             }, 1000);
         });
-
-        document.addEventListener('DOMContentLoaded', function () {
-              // ✅ Get the URL from the hidden <span> element
-              const removeExpiredUrl = document.getElementById('remove-expired-url').getAttribute('data-url')
-            
-              // ✅ Ensure removeExpiredUrl exists before calling fetch
-              if (removeExpiredUrl) {
+    
+        // Auto-remove expired bookings every 10 minutes
+        const removeExpiredUrlElement = document.getElementById('remove-expired-url');
+        if (removeExpiredUrlElement) {
+            const removeExpiredUrl = removeExpiredUrlElement.getAttribute('data-url');
+            if (removeExpiredUrl) {
                 setInterval(() => {
-                  fetch(removeExpiredUrl)
-                    .then((response) => response.json())
-                    .then((data) => console.log(data.message))
-                    .catch((error) => console.error('Error:', error))
-                }, 600000) // Run every 10 minutes (600,000 ms)
-              } else {
-                console.error('Error: remove_expired_bookings URL not found')
-              }
-            })
+                    fetch(removeExpiredUrl)
+                        .then((response) => response.json())
+                        .then((data) => console.log(data.message))
+                        .catch((error) => console.error('Error:', error));
+                }, 600000); // 10 minutes
+            } else {
+                console.error('Error: remove_expired_bookings URL not found');
+            }
+        }
+    
+        // Auto-update payment dropdown without refresh
+        document.querySelectorAll('select[name="payment"]').forEach(function (selectElement) {
+            selectElement.addEventListener('change', function () {
+                const payment = this.value;
+                const bookingId = this.getAttribute('data-booking-id');
+    
+                fetch(`/order/booking/${bookingId}/update-payment/`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': '{{ csrf_token }}',
+                    },
+                    body: JSON.stringify({ payment: payment })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.message) {
+                        console.log('Payment updated:', data.message);
+                    } else {
+                        console.error('Error:', data.error);
+                    }
+                })
+                .catch(error => console.error('Fetch error:', error));
+            });
+        });
     });
+    document.getElementById('confirm-phone').addEventListener('click', function () {
+    const phone = document.getElementById('phn').value;
+    const errorMsg = document.getElementById('phone-error');
+    
+    fetch('{% url "check_phone" %}', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'X-CSRFToken': '{{ csrf_token }}'
+        },
+        body: new URLSearchParams({ phone: phone })
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.warn(data);
+        if (data.exists) {
+            // Redirect to billing page
+            window.location.href = `/order/billing/${data.user_id}/`;
+        } else {
+            // Show error
+            errorMsg.classList.remove('d-none');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+    });
+});
+
 </script>
+
 
 {% endblock %}
